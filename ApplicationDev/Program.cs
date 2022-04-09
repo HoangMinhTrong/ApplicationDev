@@ -3,6 +3,8 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using ApplicationDev.Data;
 using ApplicationDev.Data.Initializer;
+using ApplicationDev.Service;
+using ApplicationDev.Service.IService;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -23,6 +25,10 @@ builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
     .AddDefaultUI()
     .AddDefaultTokenProviders();
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
+
+// Dependency Injection
+builder.Services.AddScoped<IUserService, UserService>();
+
 
 builder.Services.AddControllersWithViews();
 var app = builder.Build();
