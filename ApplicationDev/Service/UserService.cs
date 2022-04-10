@@ -1,18 +1,24 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using ApplicationDev.Data;
 using ApplicationDev.Service.IService;
+using ApplicationDev.ViewModels;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.EntityFrameworkCore;
 
 namespace ApplicationDev.Service
 {
     public class UserService : IUserService
     {
+        private readonly UserManager<ApplicationUser> _userManager;
         private readonly RoleManager<IdentityRole> _roleManager;
-        public UserService(RoleManager<IdentityRole> roleManager)
+        public UserService(RoleManager<IdentityRole> roleManager, UserManager<ApplicationUser> userManager)
         {
             _roleManager = roleManager;
+            _userManager = userManager;
         }
         public async Task<List<IdentityRole>> GetAll()
         {
@@ -27,6 +33,71 @@ namespace ApplicationDev.Service
                 await _roleManager.CreateAsync(new IdentityRole(roleName));
             }
             return roleName;
+        }
+        
+        private async Task<List<string>> GetUserRoles(ApplicationUser user)
+        {
+            return new List<string>(await _userManager.GetRolesAsync(user));
+        }
+        public async Task<List<UserManagerVM>> UserRolesDetail()
+        {
+            var users = await _userManager.Users.ToListAsync();
+            var userRolesViewModel = new List<UserManagerVM>();
+            foreach (ApplicationUser user in users)
+            {
+                var thisViewModel = new UserManagerVM();
+                thisViewModel.UserId = user.Id;
+                thisViewModel.Email = user.Email;
+                thisViewModel.FirstName = user.FirstName;
+                thisViewModel.LastName = user.LastName;
+                thisViewModel.Roles = await _userManager.GetRolesAsync(user);
+                userRolesViewModel.Add(thisViewModel);
+            }
+
+            return userRolesViewModel;
+        }
+
+        public async Task<List<RolesManagerVM>> ViewManagerUserRole(string userId)
+        {
+            var user = await _userManager.FindByIdAsync(userId);
+            var models = new List<RolesManagerVM>();
+            foreach (var role in _roleManager.Roles)
+            {
+                var userRolesViewModel = new RolesManagerVM()
+                {
+                    RoleId = role.Id,
+                    RoleName = role.Name
+                };
+                if (await _userManager.IsInRoleAsync(user, role.Name))
+                {
+                    userRolesViewModel.Selected = true;
+                }
+                else
+                {
+                    userRolesViewModel.Selected = false;
+                }
+                models.Add(userRolesViewModel);
+            }
+
+            return models;
+        }
+
+        public async Task<List<RolesManagerVM>> ManagerUserRole(List<RolesManagerVM> model, string userId)
+        {
+            var user = await _userManager.FindByIdAsync(userId);
+            var roles = await _userManager.GetRolesAsync(user);
+            var result = await _userManager.RemoveFromRolesAsync(user, roles);
+            if (!result.Succeeded)
+            {
+                new ModelError("Cannot remove user existing roles");
+            }
+            result = await _userManager.AddToRolesAsync(user, model.Where(x => x.Selected).Select(y => y.RoleName));
+            if (!result.Succeeded)
+            {
+                new ModelError("Cannot add selected roles to user");
+            }
+            
+            return model;
         }
     }
 }
