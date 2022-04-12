@@ -1,13 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using ApplicationDev.Service;
 using ApplicationDev.Service.IService;
 using ApplicationDev.ViewModels;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using System.Linq;
-using ApplicationDev.Data;
-using Microsoft.DotNet.Scaffolding.Shared.Messaging;
+
 
 namespace ApplicationDev.Controllers
 {
