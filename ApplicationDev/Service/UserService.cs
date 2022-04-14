@@ -1,11 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using ApplicationDev.Data;
 using ApplicationDev.Service.IService;
 using ApplicationDev.ViewModels;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.EntityFrameworkCore;
 
@@ -28,17 +26,10 @@ namespace ApplicationDev.Service
 
         public async Task<string> AddRole(string roleName)
         {
-            if (roleName != null)
-            {
-                await _roleManager.CreateAsync(new IdentityRole(roleName));
-            }
+            await _roleManager.CreateAsync(new IdentityRole(roleName));
             return roleName;
         }
-        
-        private async Task<List<string>> GetUserRoles(ApplicationUser user)
-        {
-            return new List<string>(await _userManager.GetRolesAsync(user));
-        }
+
         public async Task<List<UserManagerVM>> UserRolesDetail()
         {
             var users = await _userManager.Users.ToListAsync();

@@ -28,6 +28,7 @@ builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
 // Dependency Injection
 builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IStoreService, StoreService>();
 
 
 builder.Services.AddControllersWithViews();
