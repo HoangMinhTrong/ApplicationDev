@@ -10,7 +10,7 @@ namespace ApplicationDev.Data.Initializer
         {
             //Seed Default User
             var defaultUser = new ApplicationUser 
-            { 
+            {
                 UserName = "superadmin", 
                 Email = "superadmin@gmail.com",
                 FirstName = "Trong",

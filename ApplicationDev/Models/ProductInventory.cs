@@ -11,5 +11,6 @@ namespace ApplicationDev.Models
         public DateTime ModifiedAt { get; set; }
         public DateTime CreateAt { get; set; }
         public DateTime DeleteAt { get; set; }
+        public Product Product { get; set; }
     }
 }
