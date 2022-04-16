@@ -10,8 +10,7 @@ namespace ApplicationDev.Data.Configuration
         {
             builder.HasOne(x => x.ApplicationUser)
                 .WithOne(x => x.Store)
-                .HasForeignKey<ApplicationUser>(x => x.StoreId)
-                .OnDelete(DeleteBehavior.Cascade)
+                .HasForeignKey<Store>(x => x.UserId)
                 .IsRequired(false);
         }
     }

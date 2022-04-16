@@ -10,11 +10,14 @@ namespace ApplicationDev.Models
     {
         [Key]
         public int Id { get; set; }
+        public string UserId { get; set; }
         public string Name { get; set; }
         public string ImageUrl { get; set; }
         public DateTime CreateAt { get; set; }
         public DateTime DeleteAt { get; set; }
         public ICollection<Product> Products { get; set; }
         public ApplicationUser ApplicationUser { get; set; }
+        [NotMapped]
+        public  IEnumerable<SelectListItem> UserList { get; set; }
     }
 }

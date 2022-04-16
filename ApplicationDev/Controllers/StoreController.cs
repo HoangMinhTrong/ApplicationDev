@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Data.Common;
 using System.Linq;
 using System.Threading.Tasks;
 using ApplicationDev.Data;
@@ -6,6 +7,7 @@ using ApplicationDev.Models;
 using ApplicationDev.Service.IService;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using SQLitePCL;
 
 namespace ApplicationDev.Controllers
 {
@@ -26,9 +28,18 @@ namespace ApplicationDev.Controllers
             return View(obj);
         }
         
-        public async Task<IActionResult> CreateStore()
+        public IActionResult CreateStore()
         {
-            return View();
+            Store store = new Store
+            {
+                UserList = _context.Users.ToList().Select(x=> new SelectListItem
+                {
+                    Value = x.Id,
+                    Text = x.UserName
+                })
+            };
+            
+            return View(store);
         }
         //Create
         [HttpPost]
