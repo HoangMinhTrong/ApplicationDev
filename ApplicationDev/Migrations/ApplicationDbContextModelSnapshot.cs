@@ -189,7 +189,14 @@ namespace ApplicationDev.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("UserId")
+                        .IsUnique()
+                        .HasFilter("[UserId] IS NOT NULL");
 
                     b.ToTable("Stores");
                 });
@@ -248,9 +255,6 @@ namespace ApplicationDev.Migrations
                     b.Property<string>("SecurityStamp")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("StoreId")
-                        .HasColumnType("int");
-
                     b.Property<bool>("TwoFactorEnabled")
                         .HasColumnType("bit");
 
@@ -270,10 +274,6 @@ namespace ApplicationDev.Migrations
                         .IsUnique()
                         .HasDatabaseName("UserNameIndex")
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
-
-                    b.HasIndex("StoreId")
-                        .IsUnique()
-                        .HasFilter("[StoreId] IS NOT NULL");
 
                     b.ToTable("AspNetUsers", (string)null);
                 });
@@ -446,14 +446,13 @@ namespace ApplicationDev.Migrations
                     b.Navigation("Store");
                 });
 
-            modelBuilder.Entity("ApplicationUser", b =>
+            modelBuilder.Entity("ApplicationDev.Models.Store", b =>
                 {
-                    b.HasOne("ApplicationDev.Models.Store", "Store")
-                        .WithOne("ApplicationUser")
-                        .HasForeignKey("ApplicationUser", "StoreId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                    b.HasOne("ApplicationUser", "ApplicationUser")
+                        .WithOne("Store")
+                        .HasForeignKey("ApplicationDev.Models.Store", "UserId");
 
-                    b.Navigation("Store");
+                    b.Navigation("ApplicationUser");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -525,10 +524,13 @@ namespace ApplicationDev.Migrations
 
             modelBuilder.Entity("ApplicationDev.Models.Store", b =>
                 {
-                    b.Navigation("ApplicationUser")
-                        .IsRequired();
-
                     b.Navigation("Products");
+                });
+
+            modelBuilder.Entity("ApplicationUser", b =>
+                {
+                    b.Navigation("Store")
+                        .IsRequired();
                 });
 #pragma warning restore 612, 618
         }
