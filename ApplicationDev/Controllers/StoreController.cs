@@ -27,7 +27,6 @@ namespace ApplicationDev.Controllers
             var obj =await _storeService.GetAll();
             return View(obj);
         }
-        
         public IActionResult CreateStore()
         {
             Store store = new Store

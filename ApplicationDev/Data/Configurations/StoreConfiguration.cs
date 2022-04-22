@@ -12,6 +12,9 @@ namespace ApplicationDev.Data.Configuration
                 .WithOne(x => x.Store)
                 .HasForeignKey<Store>(x => x.UserId)
                 .IsRequired(false);
+            builder.HasMany(x => x.ProductInStores)
+                .WithOne(x => x.Store)
+                .HasForeignKey(x => x.StoreId);
         }
     }
 }
