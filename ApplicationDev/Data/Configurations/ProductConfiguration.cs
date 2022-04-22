@@ -8,18 +8,12 @@ namespace ApplicationDev.Data.Configuration
     {
         public void Configure(EntityTypeBuilder<Product> builder)
         {
-            builder.HasOne(x => x.Store)
+            builder.HasOne(x => x.ProductInStore)
                 .WithMany(x => x.Products)
-                .HasForeignKey(x => x.StoreId);
+                .HasForeignKey(x => x.ProductInStoreId);
             builder.HasOne(x => x.ProductCategory)
                 .WithMany(x => x.Products)
                 .HasForeignKey(x => x.CategoryId);
-            builder.HasOne(x => x.ProductDiscount)
-                .WithMany(x => x.Products)
-                .HasForeignKey(x => x.DiscountId);
-            builder.HasOne(x => x.ProductInventory)
-                .WithOne(x => x.Product)
-                .HasForeignKey<Product>(x => x.InventoryId);
 
         }
     }

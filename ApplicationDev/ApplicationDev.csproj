@@ -49,4 +49,8 @@
       <UpToDateCheckInput Remove="Views\Stores\Index.cshtml" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="wwwroot\Image" />
+    </ItemGroup>
+
 </Project>

@@ -15,9 +15,10 @@ namespace ApplicationDev.Models
         public string ImageUrl { get; set; }
         public DateTime CreateAt { get; set; }
         public DateTime DeleteAt { get; set; }
-        public ICollection<Product> Products { get; set; }
+        public ICollection<ProductInStore> ProductInStores { get; set; }
         public ApplicationUser ApplicationUser { get; set; }
         [NotMapped]
         public  IEnumerable<SelectListItem> UserList { get; set; }
+        
     }
 }

@@ -71,40 +71,6 @@ namespace ApplicationDev.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "ProductDiscounts",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    DiscountPercent = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    IsActive = table.Column<bool>(type: "bit", nullable: false),
-                    ModifiedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    CreateAt = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    DeleteAt = table.Column<DateTime>(type: "datetime2", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_ProductDiscounts", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "ProductInventories",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Quantity = table.Column<int>(type: "int", nullable: false),
-                    ModifiedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    CreateAt = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    DeleteAt = table.Column<DateTime>(type: "datetime2", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_ProductInventories", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "AspNetRoleClaims",
                 columns: table => new
                 {
@@ -233,6 +199,25 @@ namespace ApplicationDev.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "ProductInStores",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    StoreId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ProductInStores", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_ProductInStores_Stores_StoreId",
+                        column: x => x.StoreId,
+                        principalTable: "Stores",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Products",
                 columns: table => new
                 {
@@ -241,11 +226,9 @@ namespace ApplicationDev.Migrations
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Code = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Image = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ImageUrl = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     CategoryId = table.Column<int>(type: "int", nullable: false),
-                    InventoryId = table.Column<int>(type: "int", nullable: false),
-                    StoreId = table.Column<int>(type: "int", nullable: false),
-                    DiscountId = table.Column<int>(type: "int", nullable: false),
+                    ProductInStoreId = table.Column<int>(type: "int", nullable: false),
                     Price = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     ModifiedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
                     CreateAt = table.Column<DateTime>(type: "datetime2", nullable: false),
@@ -261,21 +244,9 @@ namespace ApplicationDev.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Products_ProductDiscounts_DiscountId",
-                        column: x => x.DiscountId,
-                        principalTable: "ProductDiscounts",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_Products_ProductInventories_InventoryId",
-                        column: x => x.InventoryId,
-                        principalTable: "ProductInventories",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_Products_Stores_StoreId",
-                        column: x => x.StoreId,
-                        principalTable: "Stores",
+                        name: "FK_Products_ProductInStores_ProductInStoreId",
+                        column: x => x.ProductInStoreId,
+                        principalTable: "ProductInStores",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -320,25 +291,19 @@ namespace ApplicationDev.Migrations
                 filter: "[NormalizedUserName] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
+                name: "IX_ProductInStores_StoreId",
+                table: "ProductInStores",
+                column: "StoreId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Products_CategoryId",
                 table: "Products",
                 column: "CategoryId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Products_DiscountId",
+                name: "IX_Products_ProductInStoreId",
                 table: "Products",
-                column: "DiscountId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Products_InventoryId",
-                table: "Products",
-                column: "InventoryId",
-                unique: true);
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Products_StoreId",
-                table: "Products",
-                column: "StoreId");
+                column: "ProductInStoreId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Stores_UserId",
@@ -376,10 +341,7 @@ namespace ApplicationDev.Migrations
                 name: "ProductCategories");
 
             migrationBuilder.DropTable(
-                name: "ProductDiscounts");
-
-            migrationBuilder.DropTable(
-                name: "ProductInventories");
+                name: "ProductInStores");
 
             migrationBuilder.DropTable(
                 name: "Stores");

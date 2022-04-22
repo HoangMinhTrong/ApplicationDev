@@ -33,8 +33,9 @@ namespace ApplicationDev.Service
         public async Task<List<Store>> GetAll()
         {
             var objId = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
-            var stores = _context.Stores.Where(x => x.UserId == objId).ToList();
-            return stores;
+            var stores = _context.Stores.Where(x => x.UserId == objId);
+            var store = stores.ToList();
+            return store;
            
         }
     }

@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ApplicationDev.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20220415080327_ORM")]
+    [Migration("20220422051053_ORM")]
     partial class ORM
     {
         /// <inheritdoc />
@@ -50,15 +50,9 @@ namespace ApplicationDev.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("DiscountId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Image")
+                    b.Property<string>("ImageUrl")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("InventoryId")
-                        .HasColumnType("int");
 
                     b.Property<DateTime>("ModifiedAt")
                         .HasColumnType("datetime2");
@@ -70,19 +64,14 @@ namespace ApplicationDev.Migrations
                     b.Property<decimal>("Price")
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<int>("StoreId")
+                    b.Property<int>("ProductInStoreId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
 
                     b.HasIndex("CategoryId");
 
-                    b.HasIndex("DiscountId");
-
-                    b.HasIndex("InventoryId")
-                        .IsUnique();
-
-                    b.HasIndex("StoreId");
+                    b.HasIndex("ProductInStoreId");
 
                     b.ToTable("Products");
                 });
@@ -113,7 +102,7 @@ namespace ApplicationDev.Migrations
                     b.ToTable("ProductCategories");
                 });
 
-            modelBuilder.Entity("ApplicationDev.Models.ProductDiscount", b =>
+            modelBuilder.Entity("ApplicationDev.Models.ProductInStore", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -121,53 +110,14 @@ namespace ApplicationDev.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
-                    b.Property<DateTime>("CreateAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime>("DeleteAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<decimal>("DiscountPercent")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<bool>("IsActive")
-                        .HasColumnType("bit");
-
-                    b.Property<DateTime>("ModifiedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("ProductDiscounts");
-                });
-
-            modelBuilder.Entity("ApplicationDev.Models.ProductInventory", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
-
-                    b.Property<DateTime>("CreateAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime>("DeleteAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime>("ModifiedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("Quantity")
+                    b.Property<int>("StoreId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
 
-                    b.ToTable("ProductInventories");
+                    b.HasIndex("StoreId");
+
+                    b.ToTable("ProductInStores");
                 });
 
             modelBuilder.Entity("ApplicationDev.Models.Store", b =>
@@ -422,29 +372,24 @@ namespace ApplicationDev.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("ApplicationDev.Models.ProductDiscount", "ProductDiscount")
+                    b.HasOne("ApplicationDev.Models.ProductInStore", "ProductInStore")
                         .WithMany("Products")
-                        .HasForeignKey("DiscountId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("ApplicationDev.Models.ProductInventory", "ProductInventory")
-                        .WithOne("Product")
-                        .HasForeignKey("ApplicationDev.Models.Product", "InventoryId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("ApplicationDev.Models.Store", "Store")
-                        .WithMany("Products")
-                        .HasForeignKey("StoreId")
+                        .HasForeignKey("ProductInStoreId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("ProductCategory");
 
-                    b.Navigation("ProductDiscount");
+                    b.Navigation("ProductInStore");
+                });
 
-                    b.Navigation("ProductInventory");
+            modelBuilder.Entity("ApplicationDev.Models.ProductInStore", b =>
+                {
+                    b.HasOne("ApplicationDev.Models.Store", "Store")
+                        .WithMany("ProductInStores")
+                        .HasForeignKey("StoreId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Store");
                 });
@@ -514,20 +459,14 @@ namespace ApplicationDev.Migrations
                     b.Navigation("Products");
                 });
 
-            modelBuilder.Entity("ApplicationDev.Models.ProductDiscount", b =>
+            modelBuilder.Entity("ApplicationDev.Models.ProductInStore", b =>
                 {
                     b.Navigation("Products");
-                });
-
-            modelBuilder.Entity("ApplicationDev.Models.ProductInventory", b =>
-                {
-                    b.Navigation("Product")
-                        .IsRequired();
                 });
 
             modelBuilder.Entity("ApplicationDev.Models.Store", b =>
                 {
-                    b.Navigation("Products");
+                    b.Navigation("ProductInStores");
                 });
 
             modelBuilder.Entity("ApplicationUser", b =>
