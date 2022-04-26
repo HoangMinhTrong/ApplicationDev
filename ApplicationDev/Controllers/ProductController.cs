@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using ApplicationDev.Data;
 using ApplicationDev.Models;
 using ApplicationDev.Service.IService;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
@@ -38,12 +39,12 @@ namespace ApplicationDev.Controllers
         {
             Product product = new Product()
             {
-                UserList = _context.Stores.ToList().Select(x=> new SelectListItem
+                ProductCategoryList = _context.ProductCategories.ToList().Select(x=> new SelectListItem
                 {
                     Value = x.Id.ToString(),
                     Text = x.Name
                 }),
-                ProductCategoryList = _context.ProductCategories.ToList().Select(x=> new SelectListItem
+                StoreList = _context.Stores.ToList().Select(x=> new SelectListItem
                 {
                     Value = x.Id.ToString(),
                     Text = x.Name
@@ -82,37 +83,26 @@ namespace ApplicationDev.Controllers
         [HttpGet]
         public async Task<IActionResult> ProductInStore(int id)
         {
-            var obj = _context.ProductInStores
-                .Include(x => x.Products)
+            var obj = _context.Products
                 .Include(x => x.Store)
                 .Where(x => x.StoreId == id);
             return View(obj);
         }
 
-        public IActionResult CreateProductInStore()
-        {
-            // ProductInStore productInStore = new ProductInStore()
-            // {
-            //     StoreList = _context.Stores.ToList().Select(x=> new SelectListItem
-            //     {
-            //         Value = x.Id.ToString(),
-            //         Text = x.Name
-            //     }),
-            // };
-            ViewBag.StoreList = ViewData["StoreId"] = new SelectList(_context.Stores, "Id", "Id");
-            return View();
-        }
-        [HttpPost]
-        public async Task<IActionResult> CreateProductInStore(ProductInStore productInStore)
-        {
-            if (productInStore.Id == 0)
-            {
-                    await _context.ProductInStores.AddAsync(productInStore);
-                    await _context.SaveChangesAsync();
-                    RedirectToAction(nameof(Index));
-            }
-            return View(productInStore);
-        }
         
+            // }
+            // [HttpPost]
+            // public async Task<IActionResult> CreateProductInStore(ProductInStore productInStore)
+            // {
+            //     if (productInStore.Id == 0)
+            //     {
+            //             await _context.ProductInStores.AddAsync(productInStore);
+            //             await _context.SaveChangesAsync();
+            //             RedirectToAction(nameof(StoreController.Index));
+            //     }
+            //     return View(productInStore);
+            // }
+    
+
     }
 }
