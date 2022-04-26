@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ApplicationDev.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20220422051053_ORM")]
+    [Migration("20220426063454_ORM")]
     partial class ORM
     {
         /// <inheritdoc />
@@ -64,14 +64,14 @@ namespace ApplicationDev.Migrations
                     b.Property<decimal>("Price")
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<int>("ProductInStoreId")
+                    b.Property<int>("StoreId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
 
                     b.HasIndex("CategoryId");
 
-                    b.HasIndex("ProductInStoreId");
+                    b.HasIndex("StoreId");
 
                     b.ToTable("Products");
                 });
@@ -100,24 +100,6 @@ namespace ApplicationDev.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("ProductCategories");
-                });
-
-            modelBuilder.Entity("ApplicationDev.Models.ProductInStore", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
-
-                    b.Property<int>("StoreId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("StoreId");
-
-                    b.ToTable("ProductInStores");
                 });
 
             modelBuilder.Entity("ApplicationDev.Models.Store", b =>
@@ -372,24 +354,13 @@ namespace ApplicationDev.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("ApplicationDev.Models.ProductInStore", "ProductInStore")
+                    b.HasOne("ApplicationDev.Models.Store", "Store")
                         .WithMany("Products")
-                        .HasForeignKey("ProductInStoreId")
+                        .HasForeignKey("StoreId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("ProductCategory");
-
-                    b.Navigation("ProductInStore");
-                });
-
-            modelBuilder.Entity("ApplicationDev.Models.ProductInStore", b =>
-                {
-                    b.HasOne("ApplicationDev.Models.Store", "Store")
-                        .WithMany("ProductInStores")
-                        .HasForeignKey("StoreId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
 
                     b.Navigation("Store");
                 });
@@ -459,14 +430,9 @@ namespace ApplicationDev.Migrations
                     b.Navigation("Products");
                 });
 
-            modelBuilder.Entity("ApplicationDev.Models.ProductInStore", b =>
-                {
-                    b.Navigation("Products");
-                });
-
             modelBuilder.Entity("ApplicationDev.Models.Store", b =>
                 {
-                    b.Navigation("ProductInStores");
+                    b.Navigation("Products");
                 });
 
             modelBuilder.Entity("ApplicationUser", b =>

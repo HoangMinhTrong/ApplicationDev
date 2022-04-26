@@ -199,25 +199,6 @@ namespace ApplicationDev.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "ProductInStores",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    StoreId = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_ProductInStores", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_ProductInStores_Stores_StoreId",
-                        column: x => x.StoreId,
-                        principalTable: "Stores",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Products",
                 columns: table => new
                 {
@@ -228,7 +209,7 @@ namespace ApplicationDev.Migrations
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     ImageUrl = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     CategoryId = table.Column<int>(type: "int", nullable: false),
-                    ProductInStoreId = table.Column<int>(type: "int", nullable: false),
+                    StoreId = table.Column<int>(type: "int", nullable: false),
                     Price = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     ModifiedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
                     CreateAt = table.Column<DateTime>(type: "datetime2", nullable: false),
@@ -244,9 +225,9 @@ namespace ApplicationDev.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Products_ProductInStores_ProductInStoreId",
-                        column: x => x.ProductInStoreId,
-                        principalTable: "ProductInStores",
+                        name: "FK_Products_Stores_StoreId",
+                        column: x => x.StoreId,
+                        principalTable: "Stores",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -291,19 +272,14 @@ namespace ApplicationDev.Migrations
                 filter: "[NormalizedUserName] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
-                name: "IX_ProductInStores_StoreId",
-                table: "ProductInStores",
-                column: "StoreId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_Products_CategoryId",
                 table: "Products",
                 column: "CategoryId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Products_ProductInStoreId",
+                name: "IX_Products_StoreId",
                 table: "Products",
-                column: "ProductInStoreId");
+                column: "StoreId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Stores_UserId",
@@ -339,9 +315,6 @@ namespace ApplicationDev.Migrations
 
             migrationBuilder.DropTable(
                 name: "ProductCategories");
-
-            migrationBuilder.DropTable(
-                name: "ProductInStores");
 
             migrationBuilder.DropTable(
                 name: "Stores");
