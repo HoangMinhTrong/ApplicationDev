@@ -20,6 +20,8 @@ namespace ApplicationDev.Controllers
             _context = context;
         }
 
+        // Test
+
         // GET: Stores
         public async Task<IActionResult> Index()
         {
