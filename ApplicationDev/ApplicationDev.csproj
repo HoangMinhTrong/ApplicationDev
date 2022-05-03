@@ -39,6 +39,7 @@
       <_ContentIncludedByDefault Remove="Views\Stores\Index.cshtml" />
       <_ContentIncludedByDefault Remove="Views\Store\CreateStore.cshtml" />
       <_ContentIncludedByDefault Remove="Views\Store\Index.cshtml" />
+      <_ContentIncludedByDefault Remove="Pages\Cart\Index.cshtml" />
     </ItemGroup>
 
     <ItemGroup>

@@ -1,0 +1,68 @@
+﻿@model List<ApplicationDev.Models.CartItem>
+
+<h2>Cart</h2>
+
+@if (Model.Count > 0)
+{
+    decimal total = 0;
+    int stt = 1;
+
+    <table class="table">
+        <tr>
+            <th>#</th>
+            <th>Product</th>
+            <th>Price</th>
+            <th>Quantity</th>
+            <th>Total</th>
+            <th></th>
+        </tr>
+        @foreach (var cartItem in Model)
+        {
+            string txt_class = "quantity_" + cartItem.Product.Id;
+
+            var totals = cartItem.Quantity * cartItem.Product.Price;
+            total += totals;
+
+            <tr>
+                <td>@(stt++)</td>
+                <td>@cartItem.Product.Name</td>
+                <td>@(cartItem.Product.Price.ToString("n0"))</td>
+                <td><input type="number" class="@txt_class" value="@cartItem.Quantity" id="@($"quantity-{cartItem.Product.Id}")" /></td>
+                <td>@(totals.ToString("n0"))</td>
+                <td>
+                   <a href="" data-id="@cartItem.Product.Id" class="updateCart btn btn-primary">Update</a>
+                    <a asp-action="RemoveCart" asp-route-productid="@cartItem.Product.Id"
+                       class="btn btn-danger">Delete</a>
+                </td>
+            </tr>
+        }
+        <tr>
+            <td colspan="4" class="text-right">Total Price</td>
+            <td>@(total.ToString("n0"))</td>
+            <td></td>
+        </tr>
+    </table>
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            $(".updateCart").click(function (event) {
+                event.preventDefault();
+                var quantity = $(".quantity_" + $(this).attr("data-id")).val();
+                console.log(quantity);
+                $.ajax({
+                    type: "POST",
+                    url:"@Url.Action("UpdateCart","Cart")",
+                    data: {
+                        id: $(this).attr("data-id"),
+                        quantity:quantity
+                    },
+                    success: function (result) {
+                        window.location.href = '@Url.Action("Index","Cart")';
+                    }
+                });
+            });
+        });
+    </script>
+
+}
+}
