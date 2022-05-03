@@ -19,8 +19,8 @@
                 </div>
                 <h3>@Html.DisplayFor(modelItem => item.Name)</h3>
                 <p class="product-price"><span></span>@Html.DisplayFor(modelItem => item.Price) $</p>
-                <a href="" class="cart-btn"><i class="fa fa-cart-plus" aria-hidden="true"></i>
-                    Add to Cart</a>
+	            <a asp-controller="Cart" asp-action="AddToCart" asp-route-productId="@item.Id" class="cart-btn"><i class="fa fa-cart-plus" aria-hidden="true"></i>
+		            Add to Cart</a>
             </div>
         </div>
    

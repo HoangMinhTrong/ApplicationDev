@@ -21,12 +21,14 @@ namespace ApplicationDev.Data
             
             modelBuilder.ApplyConfiguration(new ProductConfiguration());
             modelBuilder.ApplyConfiguration(new StoreConfiguration());
+            modelBuilder.ApplyConfiguration(new CartConfiguration());
           
         }
 
         public DbSet<Product> Products { get; set; }
         public DbSet<ProductCategory> ProductCategories { get; set; }
         public DbSet<Store> Stores { get; set; }
+        public DbSet<CartItem> CartItems { get; set; }
         
     }
 }

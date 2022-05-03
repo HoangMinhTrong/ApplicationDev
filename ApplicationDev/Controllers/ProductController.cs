@@ -58,15 +58,14 @@ namespace ApplicationDev.Controllers
         {
             //Save Image To wwwRoot
             var wwwRootPath = _hostEnvironment.WebRootPath;
-            var filename = Path.GetFileNameWithoutExtension(product.ImageFile.FileName);
-            var extension = Path.GetExtension(product.ImageFile.FileName);
-            product.ImageUrl = filename = filename + DateTime.Now.ToString("yymmssff") + extension;
-            var path = Path.Combine(wwwRootPath + "/Image/", filename);
-            using (var fileStream = new FileStream(path, FileMode.Create))
+            var filename = Path.GetFileNameWithoutExtension(product.ImageFile.FileName); // Name of Image
+            var extension = Path.GetExtension(product.ImageFile.FileName); // Tails - png, mov. jpg
+            product.ImageUrl = filename = filename + DateTime.Now.ToString("yymmssff") + extension; // Save ImageUrl
+            var path = Path.Combine(wwwRootPath + "/Image/", filename); // Save in wwwRoot
+            await using (var fileStream = new FileStream(path, FileMode.Create))
             {
                 await product.ImageFile.CopyToAsync(fileStream);
             }
-            
             var obj = _context.Products;
             await _productService.Create(product);
             return RedirectToAction(nameof(Index));
@@ -79,7 +78,7 @@ namespace ApplicationDev.Controllers
             ViewBag.ProductName = product.Name;
             return View();
         }
-
+        
         [HttpGet]
         public async Task<IActionResult> ProductInStore(int id)
         {
@@ -88,21 +87,6 @@ namespace ApplicationDev.Controllers
                 .Where(x => x.StoreId == id);
             return View(obj);
         }
-
-        
-            // }
-            // [HttpPost]
-            // public async Task<IActionResult> CreateProductInStore(ProductInStore productInStore)
-            // {
-            //     if (productInStore.Id == 0)
-            //     {
-            //             await _context.ProductInStores.AddAsync(productInStore);
-            //             await _context.SaveChangesAsync();
-            //             RedirectToAction(nameof(StoreController.Index));
-            //     }
-            //     return View(productInStore);
-            // }
-    
 
     }
 }
