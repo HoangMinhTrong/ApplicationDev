@@ -1,22 +1,30 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using ApplicationDev.Data;
 using ApplicationDev.Models;
+using AspNetCoreHero.ToastNotification.Abstractions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json;
 
 namespace ApplicationDev.Controllers
 {
     public class CartController : Controller
     {
+        private readonly INotyfService _notyf;
+        private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly ApplicationDbContext _context;
 
-        public CartController(ApplicationDbContext context)
+        public CartController(ApplicationDbContext context, IHttpContextAccessor httpContextAccessor, INotyfService notyf)
         {
             _context = context;
+            _httpContextAccessor = httpContextAccessor;
+            _notyf = notyf;
         }
         // GET
         public IActionResult Index() {
@@ -101,6 +109,44 @@ namespace ApplicationDev.Controllers
 
             SaveCartSession (cart);
             return RedirectToAction (nameof (Index));
+        }
+
+        public IActionResult Checkout()
+        {
+            ViewBag.User = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
+            ViewBag.Cart = GetCartItems();
+            return View();
+        }
+        [HttpPost]
+        public IActionResult Checkout(OrderItem orderItem)
+        {
+            var cart = GetCartItems ();
+            var userId = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
+            if (userId != null)
+            {
+                OrderItem oder = new OrderItem();
+                orderItem.OrderDate = oder.OrderDate = DateTime.Now;
+                orderItem.UserId = oder.UserId = userId;
+                orderItem.Paid = oder.Paid;
+                _context.Add(oder);
+                _context.SaveChanges();
+
+                foreach (var item in cart)
+                {
+                    OrderDetail orderDetail = new OrderDetail();
+                    orderDetail.OrderId = oder.Id;
+                    orderDetail.ProductId = item.Product.Id;
+                    orderDetail.Quantity = item.Quantity;
+                    orderDetail.Total = item.Quantity * item.Product.Price;
+                    orderDetail.CreateAt = DateTime.Now;
+                    _context.Add(orderDetail);
+                }
+                _context.SaveChanges();
+                ClearCart();
+                _notyf.Success("Success Order");
+                return RedirectToAction("Index", "Home");
+            }
+            return View(orderItem);
         }
     }
 }
