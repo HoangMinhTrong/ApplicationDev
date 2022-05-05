@@ -53,7 +53,65 @@ namespace ApplicationDev.Migrations
                         .IsUnique()
                         .HasFilter("[UserId] IS NOT NULL");
 
-                    b.ToTable("CartItems");
+                    b.ToTable("CartItem");
+                });
+
+            modelBuilder.Entity("ApplicationDev.Models.OrderDetail", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<DateTime>("CreateAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("OrderId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ProductId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Quantity")
+                        .HasColumnType("int");
+
+                    b.Property<decimal>("Total")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("OrderId");
+
+                    b.ToTable("OrderDetails");
+                });
+
+            modelBuilder.Entity("ApplicationDev.Models.OrderItem", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<string>("Note")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("OrderDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("Paid")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("OrderItems");
                 });
 
             modelBuilder.Entity("ApplicationDev.Models.Product", b =>
@@ -394,6 +452,26 @@ namespace ApplicationDev.Migrations
                     b.Navigation("Product");
                 });
 
+            modelBuilder.Entity("ApplicationDev.Models.OrderDetail", b =>
+                {
+                    b.HasOne("ApplicationDev.Models.OrderItem", "OrderItem")
+                        .WithMany("OrderDetails")
+                        .HasForeignKey("OrderId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("OrderItem");
+                });
+
+            modelBuilder.Entity("ApplicationDev.Models.OrderItem", b =>
+                {
+                    b.HasOne("ApplicationUser", "ApplicationUser")
+                        .WithMany("OderItems")
+                        .HasForeignKey("UserId");
+
+                    b.Navigation("ApplicationUser");
+                });
+
             modelBuilder.Entity("ApplicationDev.Models.Product", b =>
                 {
                     b.HasOne("ApplicationDev.Models.ProductCategory", "ProductCategory")
@@ -473,6 +551,11 @@ namespace ApplicationDev.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("ApplicationDev.Models.OrderItem", b =>
+                {
+                    b.Navigation("OrderDetails");
+                });
+
             modelBuilder.Entity("ApplicationDev.Models.ProductCategory", b =>
                 {
                     b.Navigation("Products");
@@ -487,6 +570,8 @@ namespace ApplicationDev.Migrations
                 {
                     b.Navigation("CartItem")
                         .IsRequired();
+
+                    b.Navigation("OderItems");
 
                     b.Navigation("Store")
                         .IsRequired();
