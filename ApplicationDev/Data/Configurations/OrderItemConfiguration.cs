@@ -15,6 +15,7 @@ namespace ApplicationDev.Data.Configuration
             builder.HasMany(x => x.OrderDetails)
                 .WithOne(x => x.OrderItem)
                 .HasForeignKey(x => x.OrderId);
+            
         }
         
     }

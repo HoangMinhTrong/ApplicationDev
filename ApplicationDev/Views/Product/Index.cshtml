@@ -10,29 +10,22 @@
                 Image
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Name)
+                @Html.DisplayNameFor(model => model.Title)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Code)
+                @Html.DisplayNameFor(model => model.Author)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Description)
+                @Html.DisplayNameFor(model => model.Category)
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.Price)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.ModifiedAt)
+                @Html.DisplayNameFor(model => model.Pages)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.CreateAt)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.DeleteAt)
-            </th>
-            
-            <th>
-                @Html.DisplayNameFor(model => model.ProductCategory)
+                @Html.DisplayNameFor(model => model.Desc)
             </th>
             <th></th>
         </tr>
@@ -40,33 +33,26 @@
     <tbody>
 @foreach (var item in Model) {
         <tr>
-            <td><img src="@("~/image/" + item.ImageUrl)" asp-append-version="true" width="250px" height="250px">
+            <td><img src="@("~/image/" + item.ImgUrl)" asp-append-version="true" width="250px" height="250px">
             </td> 
             <td>
-                @Html.DisplayFor(modelItem => item.Name)
+                @Html.DisplayFor(modelItem => item.Title)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Code)
+                @Html.DisplayFor(modelItem => item.Author)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Description)
+                @Html.DisplayFor(modelItem => item.Category)
             </td>
             
             <td>
                 @Html.DisplayFor(modelItem => item.Price)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.ModifiedAt)
+                @Html.DisplayFor(modelItem => item.Pages)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.CreateAt)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.DeleteAt)
-            </td>
-          
-            <td>
-                @Html.DisplayFor(modelItem => item.ProductCategory.Id)
+                @Html.DisplayFor(modelItem => item.Desc)
             </td>
             
             <td>

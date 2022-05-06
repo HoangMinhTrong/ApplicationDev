@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
+using System.Web.Http;
 using ApplicationDev.Service.IService;
 using ApplicationDev.ViewModels;
 using Microsoft.AspNetCore.Identity;
@@ -24,7 +25,7 @@ namespace ApplicationDev.Controllers
             return View(obj);
         }
         // CREATE
-        [HttpPost]
+        [Microsoft.AspNetCore.Mvc.HttpPost]
         public async Task<IActionResult> AddRole(string roleName)
         {
             await _userService.AddRole(roleName);
@@ -50,7 +51,8 @@ namespace ApplicationDev.Controllers
             return View(obj);
         }
        //POST
-       [HttpPost]
+       [Microsoft.AspNetCore.Mvc.HttpPost]
+       [Authorize(Roles = "Admin")]
         public async Task<IActionResult> ManagerUserRole(List<RolesManagerVM> model, string userId)
         {
             await _userService.ManagerUserRole(model, userId);

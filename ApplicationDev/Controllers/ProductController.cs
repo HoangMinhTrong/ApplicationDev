@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using ApplicationDev.Data;
 using ApplicationDev.Models;
@@ -18,15 +19,17 @@ namespace ApplicationDev.Controllers
 {
     public class ProductController : Controller
     {
+        private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly IWebHostEnvironment _hostEnvironment;
         private readonly IProductService _productService;
         private readonly ApplicationDbContext _context;
 
-        public ProductController(IProductService productService, IWebHostEnvironment hostEnvironment, ApplicationDbContext context)
+        public ProductController(IProductService productService, IWebHostEnvironment hostEnvironment, ApplicationDbContext context,IHttpContextAccessor httpContextAccessor)
         {
             _productService = productService;
             _hostEnvironment = hostEnvironment;
             _context = context;
+            _httpContextAccessor = httpContextAccessor;
         }
         // GET
         public async Task<IActionResult> Index()
@@ -37,14 +40,10 @@ namespace ApplicationDev.Controllers
 
         public IActionResult Create()
         {
+            var objId = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
             Product product = new Product()
             {
-                ProductCategoryList = _context.ProductCategories.ToList().Select(x=> new SelectListItem
-                {
-                    Value = x.Id.ToString(),
-                    Text = x.Name
-                }),
-                StoreList = _context.Stores.ToList().Select(x=> new SelectListItem
+                StoreList = _context.Stores.Where(x => x.UserId == objId).ToList().Select(x=> new SelectListItem
                 {
                     Value = x.Id.ToString(),
                     Text = x.Name
@@ -57,10 +56,11 @@ namespace ApplicationDev.Controllers
         public async Task<IActionResult> Create(Product product)
         {
             //Save Image To wwwRoot
+            
             var wwwRootPath = _hostEnvironment.WebRootPath;
             var filename = Path.GetFileNameWithoutExtension(product.ImageFile.FileName); // Name of Image
             var extension = Path.GetExtension(product.ImageFile.FileName); // Tails - png, mov. jpg
-            product.ImageUrl = filename = filename + DateTime.Now.ToString("yymmssff") + extension; // Save ImageUrl
+            product.ImgUrl = filename = filename + DateTime.Now.ToString("yymmssff") + extension; // Save ImageUrl
             var path = Path.Combine(wwwRootPath + "/Image/", filename); // Save in wwwRoot
             await using (var fileStream = new FileStream(path, FileMode.Create))
             {
@@ -87,6 +87,6 @@ namespace ApplicationDev.Controllers
                 .Where(x => x.StoreId == id);
             return View(obj);
         }
-
+    
     }
 }

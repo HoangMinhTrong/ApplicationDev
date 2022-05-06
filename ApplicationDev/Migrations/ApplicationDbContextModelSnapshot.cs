@@ -36,22 +36,16 @@ namespace ApplicationDev.Migrations
                     b.Property<DateTime>("ModifiedAt")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("ProductId")
-                        .HasColumnType("int");
+                    b.Property<string>("ProductIsbn")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<int>("Quantity")
                         .HasColumnType("int");
 
-                    b.Property<string>("UserId")
-                        .HasColumnType("nvarchar(450)");
-
                     b.HasKey("Id");
 
-                    b.HasIndex("ProductId");
-
-                    b.HasIndex("UserId")
-                        .IsUnique()
-                        .HasFilter("[UserId] IS NOT NULL");
+                    b.HasIndex("ProductIsbn");
 
                     b.ToTable("CartItem");
                 });
@@ -70,10 +64,14 @@ namespace ApplicationDev.Migrations
                     b.Property<int>("OrderId")
                         .HasColumnType("int");
 
-                    b.Property<int>("ProductId")
-                        .HasColumnType("int");
+                    b.Property<string>("ProductId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("Quantity")
+                        .HasColumnType("int");
+
+                    b.Property<int>("StoreId")
                         .HasColumnType("int");
 
                     b.Property<decimal>("Total")
@@ -82,6 +80,8 @@ namespace ApplicationDev.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("OrderId");
+
+                    b.HasIndex("StoreId");
 
                     b.ToTable("OrderDetails");
                 });
@@ -94,8 +94,11 @@ namespace ApplicationDev.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
-                    b.Property<string>("Note")
+                    b.Property<string>("Address")
                         .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Note")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("OrderDate")
@@ -116,39 +119,27 @@ namespace ApplicationDev.Migrations
 
             modelBuilder.Entity("ApplicationDev.Models.Product", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
+                    b.Property<string>("Isbn")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("Author")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Category")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Desc")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ImgUrl")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Pages")
                         .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
-
-                    b.Property<int>("CategoryId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Code")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("CreateAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime>("DeleteAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("ImageUrl")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("ModifiedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<decimal>("Price")
                         .HasColumnType("decimal(18,2)");
@@ -156,39 +147,15 @@ namespace ApplicationDev.Migrations
                     b.Property<int>("StoreId")
                         .HasColumnType("int");
 
-                    b.HasKey("Id");
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
-                    b.HasIndex("CategoryId");
+                    b.HasKey("Isbn");
 
                     b.HasIndex("StoreId");
 
                     b.ToTable("Products");
-                });
-
-            modelBuilder.Entity("ApplicationDev.Models.ProductCategory", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
-
-                    b.Property<DateTime>("CreateAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime>("DeleteAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime>("ModifiedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("ProductCategories");
                 });
 
             modelBuilder.Entity("ApplicationDev.Models.Store", b =>
@@ -439,15 +406,9 @@ namespace ApplicationDev.Migrations
                 {
                     b.HasOne("ApplicationDev.Models.Product", "Product")
                         .WithMany()
-                        .HasForeignKey("ProductId")
+                        .HasForeignKey("ProductIsbn")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.HasOne("ApplicationUser", "ApplicationUser")
-                        .WithOne("CartItem")
-                        .HasForeignKey("ApplicationDev.Models.CartItem", "UserId");
-
-                    b.Navigation("ApplicationUser");
 
                     b.Navigation("Product");
                 });
@@ -460,7 +421,15 @@ namespace ApplicationDev.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("ApplicationDev.Models.Store", "Store")
+                        .WithMany("OrderDetails")
+                        .HasForeignKey("StoreId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.Navigation("OrderItem");
+
+                    b.Navigation("Store");
                 });
 
             modelBuilder.Entity("ApplicationDev.Models.OrderItem", b =>
@@ -474,19 +443,11 @@ namespace ApplicationDev.Migrations
 
             modelBuilder.Entity("ApplicationDev.Models.Product", b =>
                 {
-                    b.HasOne("ApplicationDev.Models.ProductCategory", "ProductCategory")
-                        .WithMany("Products")
-                        .HasForeignKey("CategoryId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("ApplicationDev.Models.Store", "Store")
                         .WithMany("Products")
                         .HasForeignKey("StoreId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("ProductCategory");
 
                     b.Navigation("Store");
                 });
@@ -556,21 +517,15 @@ namespace ApplicationDev.Migrations
                     b.Navigation("OrderDetails");
                 });
 
-            modelBuilder.Entity("ApplicationDev.Models.ProductCategory", b =>
-                {
-                    b.Navigation("Products");
-                });
-
             modelBuilder.Entity("ApplicationDev.Models.Store", b =>
                 {
+                    b.Navigation("OrderDetails");
+
                     b.Navigation("Products");
                 });
 
             modelBuilder.Entity("ApplicationUser", b =>
                 {
-                    b.Navigation("CartItem")
-                        .IsRequired();
-
                     b.Navigation("OderItems");
 
                     b.Navigation("Store")

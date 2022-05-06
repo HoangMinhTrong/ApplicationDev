@@ -16,6 +16,7 @@ namespace ApplicationDev.Models
         public DateTime CreateAt { get; set; }
         public DateTime DeleteAt { get; set; }
         public ICollection<Product> Products { get; set; }
+        public ICollection<OrderDetail> OrderDetails { get; set; }
         public ApplicationUser ApplicationUser { get; set; }
         [NotMapped]
         public  IEnumerable<SelectListItem> UserList { get; set; }
