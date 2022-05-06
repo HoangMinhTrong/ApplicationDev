@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Runtime.Serialization;
 
 namespace ApplicationDev.Models
 {
@@ -7,9 +8,8 @@ namespace ApplicationDev.Models
     {
         public int Id { get; set; }
         public int Quantity { get; set; }
-        public Product Product { get; set; }
-        public string UserId { get; set; }
-        public ApplicationUser ApplicationUser { get; set; }
+        public virtual  Product Product { get; init; }
+        
         public DateTime ModifiedAt { get; set; }
         public DateTime CreateAt { get; set; }
     }

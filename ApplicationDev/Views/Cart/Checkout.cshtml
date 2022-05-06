@@ -1,4 +1,4 @@
-@model ApplicationDev.Models.OrderItem
+@model ApplicationDev.ViewModels.OrderVM
 @{
 	List<ApplicationDev.Models.CartItem> Carts = ViewBag.Cart;
 	decimal total = 0;
@@ -23,13 +23,34 @@
 						      <div class="card-body">
 						        <div class="billing-address-form">
 							        <form asp-action="Checkout">
-								        <p><input asp-for="UserId" value="@ViewBag.User" type="hidden" class="form-control" /></p>
-								        <p><input type="text" placeholder="Name"></p>
-								        <p><input type="email" placeholder="Email"></p>
-								        <p><input type="text" placeholder="Address"></p>
-								        <p><input type="tel" placeholder="Phone"></p>
-								        <p><textarea asp-for="Note"  name="bill" id="bill" cols="30" rows="10" placeholder="Say Something"></textarea></p>
-							        </form>
+                                                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                                                    <div class="form-group">
+                                                         <p><input asp-for="UserId" value="@ViewBag.User" type="hidden" class="form-control" /></p>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label asp-for="Address" class="control-label"></label>
+                                                        <input asp-for="Address" class="form-control" />
+                                                        <span asp-validation-for="Address" class="text-danger"></span>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label asp-for="OrderDate" class="control-label"></label>
+                                                        <input asp-for="OrderDate" class="form-control" />
+                                                        <span asp-validation-for="OrderDate" class="text-danger"></span>
+                                                    </div>
+                                                    <div class="form-group form-check">
+                                                        <label class="form-check-label">
+                                                            <input class="form-check-input" asp-for="Paid" /> @Html.DisplayNameFor(model => model.Paid)
+                                                        </label>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label asp-for="Note" class="control-label"></label>
+                                                        <input asp-for="Note" class="form-control" />
+                                                        <span asp-validation-for="Note" class="text-danger"></span>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <input type="submit" value="Create" class="btn btn-primary" />
+                                                    </div>
+                                                </form>
 						        </div>
 						      </div>
 						    </div>
@@ -55,7 +76,7 @@
 							@foreach (var item in Carts)
 								{
 									<tr>
-										<td>@item.Product.Name x @item.Quantity</td>
+										<td>@item.Product.Title x @item.Quantity</td>
 										<td>@item.Product.Price</td>
 									</tr>
 								}
@@ -72,9 +93,7 @@
                                                         		</tr>
 							</tbody>
 						</table>
-						<form asp-action="Checkout">
-						<input type="submit" value="Place Order" class="boxed-btn" />
-						</form>
+						
 					</div>
 				</div>
 			</div>

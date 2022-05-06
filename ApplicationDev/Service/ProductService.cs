@@ -34,7 +34,7 @@ namespace ApplicationDev.Service
         public async Task<Product> Create(Product product)
         {
            
-            if (product.Id == 0)
+            if (product.Isbn == null)
             {
                 
                 await _context.Products.AddAsync(product);
@@ -43,14 +43,14 @@ namespace ApplicationDev.Service
             return product;
         }
 
-        public Task<List<Product>> ProductInStore(int? id)
+        public Task<List<Product>> ProductInStore(string? id)
         {
             throw new System.NotImplementedException();
         }
 
-        public async Task<Product> Update(Product product, int id)
+        public async Task<Product> Update(Product product, string id)
         {
-            if (product.Id == id)
+            if (product.Isbn == id)
             {
                 _context.Products.Update(product);
                 await _context.SaveChangesAsync();
@@ -58,11 +58,11 @@ namespace ApplicationDev.Service
             return product;
         }
 
-        public async Task<Product> Delete(int id)
+        public async Task<Product> Delete(string id)
         {
             
             var obj = await _context.Products.FirstOrDefaultAsync();
-            if (obj.Id == id)
+            if (obj.Isbn == id)
             {
                 _context.Remove(id);
                 await _context.SaveChangesAsync();
@@ -70,7 +70,7 @@ namespace ApplicationDev.Service
             return obj;
         }
 
-        public Task<Product> Detail(int id)
+        public Task<Product> Detail(string id)
         {
             throw new System.NotImplementedException();
         }

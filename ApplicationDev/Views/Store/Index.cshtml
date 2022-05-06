@@ -1,8 +1,13 @@
 @model IEnumerable<ApplicationDev.Models.Store>
+@{
+    if (!Model.Any())
+    {
+        <p>
+            <a asp-action="CreateStore">Create New</a>
+        </p>
+    }
+}
 
-<p>
-    <a asp-action="CreateStore">Create New</a>
-</p>
 <table class="table">
     <thead>
         <tr>
@@ -42,7 +47,9 @@
                 <a asp-controller="Product" asp-action="ProductInStore" asp-route-id="@item.Id" class="btn btn-success text-white" style="cursor:pointer">
                                                             <i class="fa fa-book" aria-hidden="true"></i> Product
                                                         </a>
-                @* <a asp-action="Delete" asp-route-id="@item.Id">Delete</a> *@
+                <a asp-controller="Order" asp-action="OrderManager" asp-route-id="@item.Id" class="btn btn-success text-white" style="cursor:pointer">
+                                                                                            <i class="fa fa-book" aria-hidden="true"></i> Order Manager
+                                                                                        </a>
             </td>
         </tr>
     }

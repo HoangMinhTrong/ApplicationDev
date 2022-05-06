@@ -23,19 +23,19 @@
 							<tbody>
 							 @foreach (var cartItem in Model)
 							 {
-								 string txt_class = "quantity_" + cartItem.Product.Id;
+								 string txt_class = "quantity_" + cartItem.Product.Isbn;
 
 								 var totals = cartItem.Quantity * cartItem.Product.Price;
 								 total += totals;
 								 <tr class="table-body-row">
-									 <td class="product-remove"><a asp-action="RemoveCart" asp-route-productid="@cartItem.Product.Id"
+									 <td class="product-remove"><a asp-action="RemoveCart" asp-route-productid="@cartItem.Product.Isbn"
 									                               class="btn btn-danger">X</a>
-										 <a href="" data-id="@cartItem.Product.Id" class="btn btn-success updateCart">Update Cart</a>
+										 <a href="" data-id="@cartItem.Product.Isbn" class="btn btn-success updateCart">Update Cart</a>
 										 </td>
-									 <td class="product-image"><a href=""><img src="@("~/image/" + cartItem.Product.ImageUrl)" asp-append-version="true" width="50px" height="50px"></a></td>
-									 <td class="product-name">@cartItem.Product.Name</td>
+									 <td class="product-image"><a href=""><img src="@("~/image/" + cartItem.Product.ImgUrl)" asp-append-version="true" width="50px" height="50px"></a></td>
+									 <td class="product-name">@cartItem.Product.Title</td>
 									 <td class="product-price">@cartItem.Product.Price $</td>
-									 <td class="product-quantity"><input type="number" class="@txt_class" value="@cartItem.Quantity" id="@($"quantity-{cartItem.Product.Id}")" /></td>
+									 <td class="product-quantity"><input type="number" class="@txt_class" value="@cartItem.Quantity" id="@($"quantity-{cartItem.Product.Isbn}")" /></td>
 								 </tr>
 							 }
 							</tbody>

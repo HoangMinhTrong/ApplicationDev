@@ -5,9 +5,11 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using ApplicationDev.Data;
 using ApplicationDev.Models;
+using ApplicationDev.ViewModels;
 using AspNetCoreHero.ToastNotification.Abstractions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json;
@@ -37,11 +39,16 @@ namespace ApplicationDev.Controllers
         public List<CartItem> GetCartItems () {
 
             var session = HttpContext.Session;
-            string jsonCart = session.GetString (CARTKEY);
-            if (jsonCart != null) {
-                return JsonConvert.DeserializeObject<List<CartItem>> (jsonCart);
+            string jsonCart = session.GetString(CARTKEY);
+            if (jsonCart != null)
+            {
+                JsonSerializerSettings settings = new JsonSerializerSettings
+                {
+                    ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
+                };
+                return JsonConvert.DeserializeObject<List<CartItem>>(jsonCart, settings);
             }
-            return new List<CartItem> ();
+            return new List<CartItem>();
         }
         // Delete cart session
         void ClearCart () {
@@ -56,16 +63,15 @@ namespace ApplicationDev.Controllers
             session.SetString (CARTKEY, jsoncart);
         }
 
-        public IActionResult AddToCart (int productId) {
-
-            var product = _context.Products
-                .FirstOrDefault (p => p.Id == productId);
+        public async Task<IActionResult> AddToCart (string productId)
+        {
+            var product = await _context.Products.FirstOrDefaultAsync(p => p.Isbn == productId);
             if (product == null)
                 return NotFound ("Not Found Product");
 
             
-            var cart = GetCartItems ();
-            var cartItem = cart.Find (p => p.Product.Id == productId);
+            var cart = GetCartItems();
+            var cartItem = cart.Find(p => p.Product.Isbn == productId);
             if (cartItem != null) 
             {
                 cartItem.Quantity++;
@@ -77,7 +83,7 @@ namespace ApplicationDev.Controllers
             return RedirectToAction(nameof(HomeController.Index));
         }
         [HttpPost]
-        public IActionResult UpdateCart (int id, int quantity) {
+        public IActionResult UpdateCart (string id, int quantity) {
             var cart = GetCartItems ();
             if (cart != null)
             {
@@ -85,7 +91,7 @@ namespace ApplicationDev.Controllers
                 {
                     for (int i = 0; i < cart.Count; i++)
                     {
-                        if (cart[i].Product.Id == id)
+                        if (cart[i].Product.Isbn == id)
                         {
                             cart[i].Quantity = quantity;
                         }
@@ -100,9 +106,9 @@ namespace ApplicationDev.Controllers
 
         }
         
-        public IActionResult RemoveCart ( int productId) {
-            var cart = GetCartItems ();
-            var cartItem = cart.Find (p => p.Product.Id == productId);
+        public IActionResult RemoveCart ( string productId) {
+            var cart = GetCartItems();
+            var cartItem = cart.Find (p => p.Product.Isbn == productId);
             if (cartItem != null) {
                 cart.Remove(cartItem);
             }
@@ -118,35 +124,45 @@ namespace ApplicationDev.Controllers
             return View();
         }
         [HttpPost]
-        public IActionResult Checkout(OrderItem orderItem)
+        public async Task<IActionResult> Checkout(OrderVM orderItem)
         {
-            var cart = GetCartItems ();
+            
+            var cart = GetCartItems();
             var userId = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
-            if (userId != null)
+            if (ModelState.IsValid)
             {
                 OrderItem oder = new OrderItem();
                 orderItem.OrderDate = oder.OrderDate = DateTime.Now;
                 orderItem.UserId = oder.UserId = userId;
-                orderItem.Paid = oder.Paid;
-                _context.Add(oder);
-                _context.SaveChanges();
+                oder.Paid = orderItem.Paid;
+                oder.Address = orderItem.Address;
+                oder.Note = orderItem.Note;
+                await _context.AddAsync(oder);
+                await _context.SaveChangesAsync();
 
                 foreach (var item in cart)
                 {
                     OrderDetail orderDetail = new OrderDetail();
                     orderDetail.OrderId = oder.Id;
-                    orderDetail.ProductId = item.Product.Id;
+                    orderDetail.ProductId = item.Product.Isbn;
                     orderDetail.Quantity = item.Quantity;
                     orderDetail.Total = item.Quantity * item.Product.Price;
                     orderDetail.CreateAt = DateTime.Now;
-                    _context.Add(orderDetail);
+                    orderDetail.StoreId = item.Product.StoreId;
+                    await _context.OrderDetails.AddAsync(orderDetail);
+                    await _context.SaveChangesAsync();
                 }
-                _context.SaveChanges();
+                await _context.SaveChangesAsync();
                 ClearCart();
                 _notyf.Success("Success Order");
                 return RedirectToAction("Index", "Home");
             }
+
             return View(orderItem);
         }
+
+        
+        
+        
     }
 }
