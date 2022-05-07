@@ -34,7 +34,7 @@ namespace ApplicationDev.Controllers
                         {
                             ViewBag.Products = _context.Products.ToList();
                             var objId = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
-                            var obj = _context.OrderDetails.Where(x=>x.OrderItem.UserId == objId).ToList();
+                            var obj = _context.OrderDetails.Where(x=>x.OrderItem.UserId == objId).Where(x=>x.OrderId == id).ToList();
                             return View(obj);
                         }
     }

@@ -34,12 +34,10 @@ namespace ApplicationDev.Service
         public async Task<Product> Create(Product product)
         {
            
-            if (product.Isbn == null)
-            {
-                
+           
                 await _context.Products.AddAsync(product);
                 await _context.SaveChangesAsync();
-            }
+            
             return product;
         }
 
