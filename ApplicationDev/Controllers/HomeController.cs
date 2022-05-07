@@ -4,6 +4,7 @@ using ApplicationDev.Data;
 using Microsoft.AspNetCore.Mvc;
 using ApplicationDev.Models;
 using Microsoft.Extensions.Logging;
+using Microsoft.EntityFrameworkCore;
 
 namespace ApplicationDev.Controllers
 {
@@ -18,10 +19,27 @@ namespace ApplicationDev.Controllers
             _context = context;
         }
 
-        public IActionResult Index()
+        //public IActionResult Index()
+        //{
+        //    var obj = _context.Products.ToList();
+        //    return View(obj);
+        //}
+
+        public async Task<IActionResult> Index(int id = 0, string searchString = "")
         {
-            var obj = _context.Products.ToList();
-            return View(obj);
+            ViewData["CurrentFilter"] = searchString;
+            var products = from p in _context.Products
+                           select p;
+
+            products = products.Where(s => s.Title.Contains(searchString) || s.Author.Contains(searchString));
+            //
+            int numOfFilteredStudent = products.Count();
+            ViewBag.numberOfPages = (int)Math.Ceiling((double)numOfFilteredStudent / 24);
+            ViewBag.CurrentPage = id;
+            List<Product> studentsList = await products.Skip(id * 24)
+                .Take(24).ToListAsync();
+
+            return View(studentsList);
         }
 
         public IActionResult Privacy()

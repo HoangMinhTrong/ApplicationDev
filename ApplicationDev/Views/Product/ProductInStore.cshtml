@@ -26,7 +26,7 @@
     <tbody>
 @foreach (var item in Model) {
         <tr>
-            <td><img src="@("~/image/" + item.ImgUrl)" asp-append-version="true" width="250px" height="250px">
+            <td><img src="@("" + item.ImgUrl)" asp-append-version="true" width="250px" height="250px">
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Title)
