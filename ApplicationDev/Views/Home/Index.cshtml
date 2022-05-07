@@ -14,17 +14,17 @@ else
 				<div class="col-lg-8 offset-lg-2 text-center">
 					<div class="section-title">	
 						<h3><span class="orange-text">Our</span> Products</h3>
-						<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Aliquid, fuga quas itaque eveniet beatae optio.</p>
+						@*<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Aliquid, fuga quas itaque eveniet beatae optio.</p>*@
 					</div>
 				</div>
 			</div>
 			<div class="row">
 				@foreach (var item in Model) {
     
-					<div class="col-lg-4 col-md-6 text-center">
+					<div class="col-lg-3 col-md-6 text-center">
 						<div class="single-product-item">
 							<div class="product-image">
-								<a href=""><img src="@("~/image/" + item.ImgUrl)" asp-append-version="true" width="250px" height="250px"></a>
+								<a href=""><img src="@("" + item.ImgUrl)" asp-append-version="true" width="250px" height="250px"></a>
 							</div>
 							<h3>@Html.DisplayFor(modelItem => item.Title)</h3>
 							<p class="product-price"><span></span>@Html.DisplayFor(modelItem => item.Price) $</p>

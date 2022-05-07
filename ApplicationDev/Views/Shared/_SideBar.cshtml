@@ -42,15 +42,15 @@
                 <a class="collapse-item " asp-area="Identity" asp-page="/Account/Manage/Index"><i class="fas fa-user-circle mx-2"></i>Profile</a>
                 <a class="collapse-item " asp-area="Identity" asp-page="/Account/Manage/ChangePassword"><i class="fas fa-lock mx-2"></i>Password</a>
                 @if (User.IsInRole("Admin"))
-                                    {
-                                        
-                                        <a class="collapse-item" asp-controller="User" asp-action="UserRolesDetail" ><i class="fas fa-list mx-2"></i>Assign roles</a>
-                                    }
-                                            @if (User.IsInRole("StoreOwner"))
-                                    {
-                                        <a class="collapse-item" asp-controller="Store" asp-action="Index"><i class="fas fa-list mx-2"></i>Store</a>
-                                       
-                                    }
+                {
+
+                    <a class="collapse-item" asp-controller="User" asp-action="UserRolesDetail"><i class="fas fa-list mx-2"></i>Assign roles</a>
+                }
+                @if (User.IsInRole("StoreOwner"))
+                {
+                    <a class="collapse-item" asp-controller="Store" asp-action="Index"><i class="fas fa-list mx-2"></i>Store</a>
+
+                }
                 @if (hasExternalLogins)
                 {
                     <a class="collapse-item " asp-area="Identity" asp-page="/Account/Manage/ExternalLogins">External logins</a>
@@ -67,8 +67,6 @@
         Posts
     </div>
     <!-- Nav Item - Pages Collapse Menu -->
-    
-
     <!-- Divider -->
     <hr class="sidebar-divider d-none d-md-block">
 
