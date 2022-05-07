@@ -1,21 +1,12 @@
-using System;
-using System.Text.Json.Serialization;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
 using ApplicationDev.Data;
 using ApplicationDev.Data.Initializer;
 using ApplicationDev.Service;
 using ApplicationDev.Service.IService;
 using AspNetCoreHero.ToastNotification;
 using AspNetCoreHero.ToastNotification.Extensions;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Http.Json;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
-using Microsoft.VisualStudio.Web.CodeGeneration.Design;
-using Newtonsoft.Json;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity.UI.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDistributedMemoryCache();
@@ -32,10 +23,13 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 //Service for Identity User
-builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
+builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options => options.SignIn.RequireConfirmedAccount = true)
     .AddEntityFrameworkStores<ApplicationDbContext>()
     .AddDefaultUI()
-    .AddDefaultTokenProviders();
+    .AddDefaultTokenProviders()
+    .AddRoles<IdentityRole>()
+    .AddEntityFrameworkStores<ApplicationDbContext>();
+
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
 //Ignore Circle
@@ -52,6 +46,19 @@ builder.Services.AddScoped<IStoreService, StoreService>();
 builder.Services.AddScoped<IProductService, ProductService>();
 
 builder.Services.AddControllersWithViews();
+
+var config = builder.Configuration;
+builder.Services.AddTransient<IEmailSender, EmailSender>();
+builder.Services.Configure<EmailSenderOptions>(options =>
+{
+    options.Host = config["MailSettings:Host"];
+    options.Port = int.Parse(config["MailSettings:Port"]);
+    options.User = config["MailSettings:User"];
+    options.Pass = config["MailSettings:Pass"];
+    options.Name = config["MailSettings:Name"];
+    options.Sender = config["MailSettings:User"];
+});
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
