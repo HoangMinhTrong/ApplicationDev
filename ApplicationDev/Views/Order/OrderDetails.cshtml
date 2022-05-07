@@ -1,6 +1,9 @@
 @model IEnumerable<ApplicationDev.Models.OrderDetail>
 @{
     List<Product> products = ViewBag.Products;
+    List<OrderItem> orderItems = ViewBag.Oders;
+        
+    
 }
 <p>
     @* <a asp-action="Create">Create New</a> *@
@@ -29,22 +32,24 @@
     <tbody>
 @foreach (var item in Model) {
         <tr>
-            @foreach (var product in products)
-            {
-                if (product.Isbn == item.ProductId)
+            @foreach (var orderId in orderItems)
                 {
-                    <td>
-                        @Html.DisplayFor(modelItem => product.Title)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => product.Author)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => product.Price)
-                    </td>
-
+                    foreach (var product in products)
+                        {
+                            if (orderId.Id == item.OrderId)
+                            {
+                            <td>
+                                @Html.DisplayFor(modelItem => product.Title)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => product.Author)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => product.Price)
+                            </td>
+                        }
+                    }
                 }
-            }
             <td>
                 @Html.DisplayFor(modelItem => item.Quantity)
             </td>
