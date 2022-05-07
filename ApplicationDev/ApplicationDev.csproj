@@ -13,9 +13,12 @@
     </ItemGroup>
 
     <ItemGroup>
+        <PackageReference Include="AspNetCoreHero.ToastNotification" Version="1.1.0" />
+        <PackageReference Include="Microsoft.AspNet.WebApi.WebHost" Version="5.2.8" />
         <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="6.0.0" />
         <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="6.0.3" />
         <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="6.0.3" />
+        <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="6.0.0" />
         <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="7.0.0-preview.2.22153.1">
           <PrivateAssets>all</PrivateAssets>
           <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -23,12 +26,43 @@
         <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="7.0.0-preview.2.22153.1" />
         <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="6.0.0" />
         <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="6.0.3" />
-        <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="6.0.3">
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="6.0.4">
           <PrivateAssets>all</PrivateAssets>
           <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
         <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Core" Version="7.0.0-preview.1.22116.2" />
         <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="6.0.2" />
+        <PackageReference Include="NETCore.MailKit" Version="2.0.3" />
+        <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <_ContentIncludedByDefault Remove="Views\Stores\Create.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\Stores\Delete.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\Stores\Details.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\Stores\Edit.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\Stores\Index.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\Store\CreateStore.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\Store\Index.cshtml" />
+      <_ContentIncludedByDefault Remove="Pages\Cart\Index.cshtml" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <UpToDateCheckInput Remove="Views\Stores\Create.cshtml" />
+      <UpToDateCheckInput Remove="Views\Stores\Delete.cshtml" />
+      <UpToDateCheckInput Remove="Views\Stores\Details.cshtml" />
+      <UpToDateCheckInput Remove="Views\Stores\Edit.cshtml" />
+      <UpToDateCheckInput Remove="Views\Stores\Index.cshtml" />
+      <UpToDateCheckInput Remove="Views\Stores\Create.cshtml" />
+      <UpToDateCheckInput Remove="Views\Stores\Delete.cshtml" />
+      <UpToDateCheckInput Remove="Views\Stores\Details.cshtml" />
+      <UpToDateCheckInput Remove="Views\Stores\Edit.cshtml" />
+      <UpToDateCheckInput Remove="Views\Stores\Index.cshtml" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="wwwroot\Image" />
+      <Folder Include="wwwroot\sbadmin" />
     </ItemGroup>
 
 </Project>
