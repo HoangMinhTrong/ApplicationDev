@@ -33,11 +33,9 @@ namespace ApplicationDev.Service
 
         public async Task<Product> Create(Product product)
         {
-           
-           
+                
                 await _context.Products.AddAsync(product);
                 await _context.SaveChangesAsync();
-            
             return product;
         }
 
