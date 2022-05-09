@@ -5,8 +5,8 @@ EXPOSE 443
 
 FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
 WORKDIR /src
-COPY ["./ApplicationDev.csproj", "src/"]
-RUN dotnet restore "src/ApplicationDev.csproj"
+COPY ["ApplicationDev/ApplicationDev.csproj", "ApplicationDev/"]
+RUN dotnet restore "ApplicationDev/ApplicationDev.csproj"
 COPY . .
 WORKDIR "/src/"
 RUN dotnet build "ApplicationDev.csproj" -c Release -o /app/build
@@ -16,4 +16,4 @@ FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
 ENTRYPOINT ["dotnet", "ApplicationDev.dll"]
-CMD ASPNETCORE_URLS=http://*:$PORT dotnet HerokuApp.dll
+CMD ASPNETCORE_URLS=http://*:$PORT dotnet fptshop.dll
